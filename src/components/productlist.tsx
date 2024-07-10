@@ -1,7 +1,7 @@
 // ProductList
 import React, { useEffect, useState } from 'react'; 
 import { collection, getDocs, DocumentData } from 'firebase/firestore'; 
-import { db } from "../../firebaseConfig"; 
+import { db } from "@/components/authprovider"; 
 
 interface Product {
     id: string, 
