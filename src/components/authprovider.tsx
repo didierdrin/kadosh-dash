@@ -1,0 +1,63 @@
+'use client';
+
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { User, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
+import { useRouter } from 'next/navigation';
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+
+export const useAuth = () => useContext(AuthContext);
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+      if (user) {
+        user.getIdToken().then((token) => {
+          localStorage.setItem('auth_token', token);
+        });
+      } else {
+        localStorage.removeItem('auth_token');
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
