@@ -6,11 +6,12 @@ import React from "react";
 import { useAuth } from "@/components/authprovider";
 // Components
 import Overviewpg from "@/components/overviewpg";
+import Inventorypg from "@/components/inventorypg";
 
 // Components for each page
 //const Overview = () => Overviewpg;
 const OngoingOrder = () => <div>Ongoing order</div>;
-const Inventory = () => <div>Inventory</div>;
+//const Inventory = () => <div>Inventory</div>;
 const RecentOrders = () => <div>Recent orders</div>;
 const Advertise = () => <div>Advertisements</div>;
 const Help = () => <div>Help</div>;
@@ -55,7 +56,7 @@ export default function Home() {
       case "ongoingOrder":
         return <OngoingOrder />;
       case "inventory":
-        return <Inventory />;
+        return <Inventorypg />;
       case "recentOrders":
         return <RecentOrders />;
       case "advertise":

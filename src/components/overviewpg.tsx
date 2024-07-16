@@ -9,7 +9,7 @@ export default function Overviewpg() {
         <div className='flex flex-col'>
             {/* title - header */}
             <div>
-                <h4 className='font-semibold'>Overview</h4>
+                <h4 className='text-2xl font-bold'>Overview</h4>
                 <a href="#" className='text-xs'>Check your current sales summary</a>
             </div>
             {/* main contents - using components  is better */}
