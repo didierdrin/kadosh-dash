@@ -1,5 +1,10 @@
 // components/Inventory.tsx 
 // adding in the same document. Document corresponds to the logged in user uid. 
+"use client";
+
+//import { useState, useEffect } from 'react';
+import { useAuth } from '@/components/authprovider';
+//import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { getFirestore, doc, getDoc, updateDoc, collection } from 'firebase/firestore';
@@ -188,4 +193,105 @@ const Inventorypg2: React.FC = () => {
   );
 };
 
-export default Inventorypg2; 
+//export default Inventorypg2; 
+
+// Ongoingorderspg
+
+interface Order {
+  orderId: string;
+  createTime: string;
+  delivered: boolean;
+  cancelled: boolean;
+  products: Array<{
+    id: number;
+    name: string;
+    price: number;
+    qty: number;
+  }>;
+  shippingDetails: {
+    address: string;
+    city: string;
+    email: string;
+    fullName: string;
+    zipCode: string;
+  };
+  total: number;
+}
+
+const OngoingOrderpg = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const { user } = useAuth();
+  const db = getFirestore();
+
+  useEffect(() => {
+    fetchOrders();
+  }, [user]);
+
+  const fetchOrders = async () => {
+    if (!user) return;
+
+    const userDocRef = doc(db, 'users', 'qWE5sgjt0RRhtHDqwciu', 'client_data', user.uid);
+    const docSnap = await getDoc(userDocRef);
+
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      setOrders(userData.current_orders || []);
+    }
+  };
+
+  const toggleOrderStatus = async (orderId: string, field: 'delivered' | 'cancelled') => {
+    if (!user) return;
+
+    const userDocRef = doc(db, 'users', 'qWE5sgjt0RRhtHDqwciu', 'client_data', user.uid);
+    const updatedOrders = orders.map(order => {
+      if (order.orderId === orderId) {
+        return { ...order, [field]: !order[field] };
+      }
+      return order;
+    });
+
+    await updateDoc(userDocRef, { current_orders: updatedOrders });
+    setOrders(updatedOrders);
+  };
+
+  return (
+    <div className="container mx-auto">
+      <h1 className="text-2xl font-bold mb-2">Ongoing Orders</h1>
+      <p className="text-xs mb-8">Delivered, & Pending Orders</p>
+      {orders.map((order) => (
+        <div key={order.orderId} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <h2 className="text-2xl font-semibold mb-2">Order ID: {order.orderId}</h2>
+          <p>Date: {new Date(order.createTime).toLocaleString()}</p>
+          <p>Customer: {order.shippingDetails.fullName}</p>
+          <p>Email: {order.shippingDetails.email}</p>
+          <p>Address: {order.shippingDetails.address}, {order.shippingDetails.city}, {order.shippingDetails.zipCode}</p>
+          <h3 className="text-xl font-semibold mt-4 mb-2">Products:</h3>
+          <ul>
+            {order.products.map((product) => (
+              <li key={product.id}>
+                {product.name} - Quantity: {product.qty} - Price: RWF {product.price.toFixed(2)}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 font-bold">Total: RWF {order.total.toFixed(2)}</p>
+          <div className="mt-4 flex space-x-4">
+            <button
+              onClick={() => toggleOrderStatus(order.orderId, 'delivered')}
+              className={`px-4 py-2 rounded ${order.delivered ? 'bg-green-500' : 'bg-gray-300'} text-white`}
+            >
+              {order.delivered ? 'Delivered' : 'Mark as Delivered'}
+            </button>
+            <button
+              onClick={() => toggleOrderStatus(order.orderId, 'cancelled')}
+              className={`px-4 py-2 rounded ${order.cancelled ? 'bg-red-500' : 'bg-gray-300'} text-white`}
+            >
+              {order.cancelled ? 'Cancelled' : 'Cancel Order'}
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default OngoingOrderpg;

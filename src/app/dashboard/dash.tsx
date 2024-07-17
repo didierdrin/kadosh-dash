@@ -7,12 +7,11 @@ import { useAuth } from "@/components/authprovider";
 // Components
 import Overviewpg from "@/components/overviewpg";
 import Inventorypg from "@/components/inventorypg";
+import OngoingOrderpg from "@/components/ongoingorderpg";
+import RecentOrderspg from "@/components/recentorderspg";
 
 // Components for each page
 //const Overview = () => Overviewpg;
-const OngoingOrder = () => <div>Ongoing order</div>;
-//const Inventory = () => <div>Inventory</div>;
-const RecentOrders = () => <div>Recent orders</div>;
 const Advertise = () => <div>Advertisements</div>;
 const Help = () => <div>Help</div>;
 const Settings = () => <div>Settings</div>;
@@ -54,11 +53,11 @@ export default function Home() {
       case "overview":
         return <Overviewpg />;
       case "ongoingOrder":
-        return <OngoingOrder />;
+        return <OngoingOrderpg />;
       case "inventory":
         return <Inventorypg />;
       case "recentOrders":
-        return <RecentOrders />;
+        return <RecentOrderspg />;
       case "advertise":
         return <Advertise />;
       case "help":
