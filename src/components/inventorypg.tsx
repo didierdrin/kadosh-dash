@@ -75,7 +75,7 @@ const Inventorypg: React.FC = () => {
   const uploadImage = async (): Promise<string> => {
     if (!image) return ''; // If no image is selected, return empty string
     const storage = getStorage();
-    const storageRef = ref(storage, `product_images/${image.name}`);
+    const storageRef = ref(storage, image.name);
     await uploadBytes(storageRef, image);
     const downloadURL = await getDownloadURL(storageRef); // Get the download URL
     return downloadURL;
