@@ -9,6 +9,7 @@ import Overviewpg from "@/components/overviewpg";
 import Inventorypg from "@/components/inventorypg";
 import OngoingOrderpg from "@/components/ongoingorderpg";
 import RecentOrderspg from "@/components/recentorderspg";
+import ProfileCard from "./profilecard";
 
 // Components for each page
 //const Overview = () => Overviewpg;
@@ -16,34 +17,34 @@ const Advertise = () => <div>Advertisements</div>;
 const Help = () => <div>Help</div>;
 const Settings = () => <div>Settings</div>;
 
-const ProfileCard = () => {
-  return (
-    <div className="flex items-center mr-3 p-5 h-[60px] w-auto rounded-md border border-slate-400 hover:bg-sky-50 hover:-translate-x-1 cursor-pointer">
-      <img
-        src="https://res.cloudinary.com/dezvucnpl/image/upload/v1711303384/two-removebg-preview_ttc7ev.png"
-        alt="Profile"
-        width={40}
-        height={40}
-      />
-      <span className="ml-2">Name Sec.</span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="ml-auto"
-      >
-        <path d="M5 12h14" />
-        <path d="M12 5l7 7-7 7" />
-      </svg>
-    </div>
-  );
-};
+// const TwoProfileCard = () => {
+//   return (
+//     <div className="flex items-center mr-3 p-5 h-[60px] w-auto rounded-md border border-slate-400 hover:bg-sky-50 hover:-translate-x-1 cursor-pointer">
+//       <img
+//         src="https://res.cloudinary.com/dezvucnpl/image/upload/v1711303384/two-removebg-preview_ttc7ev.png"
+//         alt="Profile"
+//         width={40}
+//         height={40}
+//       />
+//       <span className="ml-2">Name Sec.</span>
+//       <svg
+//         xmlns="http://www.w3.org/2000/svg"
+//         width="24"
+//         height="24"
+//         viewBox="0 0 24 24"
+//         fill="none"
+//         stroke="currentColor"
+//         strokeWidth="2"
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         className="ml-auto"
+//       >
+//         <path d="M5 12h14" />
+//         <path d="M12 5l7 7-7 7" />
+//       </svg>
+//     </div>
+//   );
+// };
 
 export default function Home() {
   const { logout } = useAuth();

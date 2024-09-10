@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { getFirestore, doc, getDoc, updateDoc, collection } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface Product {
     id?: number;
@@ -21,6 +22,7 @@ const Inventorypg: React.FC = () => {
     img: '', name: '', manufacturer: '', model: '', qty: 0, price: 0, category: '', details: ''
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [image, setImage] = useState<File | null>(null); // Image state to hold the uploaded image
 
   useEffect(() => {
     fetchProducts();
@@ -64,16 +66,31 @@ const Inventorypg: React.FC = () => {
     }
   };
 
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]); // Store the uploaded image
+    }
+  };
+
+  const uploadImage = async (): Promise<string> => {
+    if (!image) return ''; // If no image is selected, return empty string
+    const storage = getStorage();
+    const storageRef = ref(storage, `product_images/${image.name}`);
+    await uploadBytes(storageRef, image);
+    const downloadURL = await getDownloadURL(storageRef); // Get the download URL
+    return downloadURL;
+  };
+
   const addProduct = async () => {
     try {
       const db = getFirestore();
+      const img_url = await uploadImage(); // Upload the image and get the URL
       const usersCollection = collection(db, 'users');
       const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
       const sellerDataCollection = collection(userDoc, 'seller_data');
       const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
 
-      //console.log('Adding product:', newProduct);
-      const updatedProducts = [...products, { ...newProduct, id: Date.now() }];
+      const updatedProducts = [...products, { ...newProduct, img: img_url, id: Date.now() }];
       
       await updateDoc(sellerDataDoc, {
         products: updatedProducts
@@ -82,6 +99,7 @@ const Inventorypg: React.FC = () => {
       setNewProduct({
         img: '', name: '', manufacturer: '', model: '', qty: 0, price: 0, category: '', details: ''
       });
+      setImage(null); // Reset the image after upload
       fetchProducts();
     } catch (err) {
       console.error('Error adding product:', err);
@@ -91,24 +109,120 @@ const Inventorypg: React.FC = () => {
   const updateProduct = async () => {
     if (!editingProduct) return;
     try {
+      const img_url = image ? await uploadImage() : editingProduct.img; // Only upload if a new image is selected
       const db = getFirestore();
       const usersCollection = collection(db, 'users');
       const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
       const sellerDataCollection = collection(userDoc, 'seller_data');
       const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
 
-      const updatedProducts = products.map(p => p.id === editingProduct.id ? editingProduct : p);
+      const updatedProducts = products.map(p => p.id === editingProduct.id ? { ...editingProduct, img: img_url } : p);
       
       await updateDoc(sellerDataDoc, {
         products: updatedProducts
       });
 
       setEditingProduct(null);
+      setImage(null); // Reset the image after update
       fetchProducts();
     } catch (err) {
       console.error('Error updating product:', err);
     }
   };
+
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [newProduct, setNewProduct] = useState<Product>({
+  //   img: '', name: '', manufacturer: '', model: '', qty: 0, price: 0, category: '', details: ''
+  // });
+  // const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, []);
+
+  // const fetchProducts = async () => {
+  //   try {
+  //     const db = getFirestore();
+  //     const usersCollection = collection(db, 'users');
+  //     const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
+  //     const sellerDataCollection = collection(userDoc, 'seller_data');
+  //     const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+      
+  //     const sellerDataSnapshot = await getDoc(sellerDataDoc);
+      
+  //     if (sellerDataSnapshot.exists()) {
+  //       const sellerData = sellerDataSnapshot.data();
+  //       if (sellerData && sellerData.products) {
+  //         setProducts(sellerData.products);
+  //       }
+  //     } else {
+  //       console.error('Seller data not found');
+  //     }
+  //   } catch (err) {
+  //     console.error('Error fetching products:', err);
+  //   }
+  // };
+
+  // const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, isNewProduct: boolean = true) => {
+  //   const { name, value } = e.target;
+  //   if (isNewProduct) {
+  //     setNewProduct(prev => ({
+  //       ...prev,
+  //       [name]: name === 'qty' || name === 'price' ? Number(value) : value
+  //     }));
+  //   } else {
+  //     setEditingProduct(prev => prev ? {
+  //       ...prev,
+  //       [name]: name === 'qty' || name === 'price' ? Number(value) : value
+  //     } : null);
+  //   }
+  // };
+
+  // const addProduct = async () => {
+  //   try {
+  //     const db = getFirestore();
+  //     const usersCollection = collection(db, 'users');
+  //     const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
+  //     const sellerDataCollection = collection(userDoc, 'seller_data');
+  //     const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+
+  //     //console.log('Adding product:', newProduct);
+  //     const updatedProducts = [...products, { ...newProduct, id: Date.now() }];
+      
+  //     await updateDoc(sellerDataDoc, {
+  //       products: updatedProducts
+  //     });
+
+  //     setNewProduct({
+  //       img: '', name: '', manufacturer: '', model: '', qty: 0, price: 0, category: '', details: ''
+  //     });
+  //     fetchProducts();
+  //   } catch (err) {
+  //     console.error('Error adding product:', err);
+  //   }
+  // };
+
+  // const updateProduct = async () => {
+  //   if (!editingProduct) return;
+  //   try {
+  //     const db = getFirestore();
+  //     const usersCollection = collection(db, 'users');
+  //     const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
+  //     const sellerDataCollection = collection(userDoc, 'seller_data');
+  //     const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+
+  //     const updatedProducts = products.map(p => p.id === editingProduct.id ? editingProduct : p);
+      
+  //     await updateDoc(sellerDataDoc, {
+  //       products: updatedProducts
+  //     });
+
+  //     setEditingProduct(null);
+  //     fetchProducts();
+  //   } catch (err) {
+  //     console.error('Error updating product:', err);
+  //   }
+  // };
 
   const deleteProduct = async (productId: number) => {
     try {
@@ -141,9 +255,10 @@ const Inventorypg: React.FC = () => {
           <input type="text" name="manufacturer" placeholder="Manufacturer" value={newProduct.manufacturer} onChange={handleInputChange} className="p-2 border rounded" />
           <input type="text" name="model" placeholder="Model" value={newProduct.model} onChange={handleInputChange} className="p-2 border rounded" />
           <input type="text" name="category" placeholder="Category" value={newProduct.category} onChange={handleInputChange} className="p-2 border rounded" />
-          <input type="number" name="price" placeholder="Price" value={newProduct.price} onChange={handleInputChange} className="p-2 border rounded" />
-          <input type="number" name="qty" placeholder="Quantity" value={newProduct.qty} onChange={handleInputChange} className="p-2 border rounded" />
-          <input type="text" name="img" placeholder="Image URL" value={newProduct.img} onChange={handleInputChange} className="p-2 border rounded" />
+          <input type="number" name="price" placeholder="Price" value={newProduct.price === 0 ? '' : newProduct.price} onChange={handleInputChange} className="p-2 border rounded" />
+          <input type="number" name="qty" placeholder="Quantity" value={newProduct.qty === 0 ? '' : newProduct.qty} onChange={handleInputChange} className="p-2 border rounded" />
+          <input type="file" onChange={handleImageChange} className="p-2 border rounded" /> {/* Input for image */}
+          {/* <input type="text" name="img" placeholder="Image URL" value={newProduct.img} onChange={handleInputChange} className="p-2 border rounded" /> */}
           <textarea name="details" placeholder="Details" value={newProduct.details} onChange={handleInputChange} className="p-2 border rounded" rows={3}></textarea>
         </div>
         <button onClick={addProduct} className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add Product</button>
@@ -172,7 +287,7 @@ const Inventorypg: React.FC = () => {
                 <p><strong>Manufacturer:</strong> {product.manufacturer}</p>
                 <p><strong>Model:</strong> {product.model}</p>
                 <p><strong>Category:</strong> {product.category}</p>
-                <p><strong>Price:</strong> ${product.price}</p>
+                <p><strong>Price:</strong> RWF{product.price}</p>
                 <p><strong>Quantity:</strong> {product.qty}</p>
                 <p><strong>Details:</strong> {product.details}</p>
                 <div className="mt-2">
