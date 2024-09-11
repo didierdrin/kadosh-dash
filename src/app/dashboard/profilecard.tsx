@@ -65,12 +65,13 @@ const ProfileCard = () => {
 
   return (
     <>
-      <div onClick={handleDialogOpen} className="flex items-center p-5 h-[60px] w-auto rounded-md border border-slate-400 hover:bg-sky-50 hover:-translate-x-1 cursor-pointer">
+      <div onClick={handleDialogOpen} className="flex items-center p-5 mr-4 h-[60px] w-auto rounded-md border border-slate-400 hover:bg-sky-50 hover:-translate-x-1 cursor-pointer">
         <img
-          src="https://res.cloudinary.com/dezvucnpl/image/upload/v1711303384/two-removebg-preview_ttc7ev.png"
+          src="https://res.cloudinary.com/dezvucnpl/image/upload/v1726036912/luke-chesser-3rWagdKBF7U-unsplash_naszau.jpg"
           alt="Profile"
-          width={40}
-          height={40}
+          width="20px"
+          height="40px"
+          className="rounded-lg object-cover max-h-full"
         />
         <span className="ml-2">{userInfo.fullName || userInfo.email}</span>
         <svg

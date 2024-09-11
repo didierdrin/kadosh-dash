@@ -1,7 +1,7 @@
-// first layout card component
+// Third layout card component
 import React from "react";
 
-const FLCard = ({ cardName, cardPrice, cardPercentage }: any) => {
+const TLCard = ({ cardName, cardPrice, cardPercentage }: any) => {
   function commify(num: any) {
     var str = num.toString().split(".");
     if (str[0].length >= 5) {
@@ -21,11 +21,11 @@ const FLCard = ({ cardName, cardPrice, cardPercentage }: any) => {
           {cardPercentage}%
         </p>
       </div>
-      <p className="text-xs mt-2">RWF {commify(cardPrice)}</p>
-      <p className="text-xs mt-2">From last month</p>
+      <p className="text-xs mt-2"><strong>Total</strong> {commify(cardPrice)}</p>
+      <p className="text-xs mt-2">From this month</p>
       {/* <p className="text-xs mt-2">{cardPercentage}% from last month</p> */}
     </div>
   );
 };
 
-export default FLCard;
+export default TLCard;

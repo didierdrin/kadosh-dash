@@ -1,9 +1,8 @@
 // Second layout card
 import React from "react";
-// Component import 
 import MonthSelector from "./monthselectory";
 
-export default function SLCard({ cardName, cardPrice }: any) {
+export default function SLCard({ cardName, cardPrice, children }: any) {
   function commify(num: any) {
     var str = num.toString().split(".");
     if (str[0].length >= 5) {
@@ -22,7 +21,9 @@ export default function SLCard({ cardName, cardPrice }: any) {
         <MonthSelector />
       </div>
       <p className="text-xs">RWF{commify(cardPrice)}</p>
-      <span className="mb-10 mt-5">Visual Graphics - Diagrams</span>
+      <div className="mt-5">
+        {children} {/* This will render the Bar chart */}
+      </div>
     </div>
   );
 }

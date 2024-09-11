@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { getFirestore, collection, getDocs, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, addDoc,updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 interface Order {
   orderId: string;
@@ -53,6 +53,31 @@ const OngoingOrderpg = () => {
     setOrders(allOrders);
   };
 
+  // const toggleOrderStatus = async (orderId: string, userId: string, field: 'delivered' | 'cancelled') => {
+  //   const userDocRef = doc(db, 'users', 'qWE5sgjt0RRhtHDqwciu', 'client_data', userId);
+  //   const updatedOrders = orders.map(order => {
+  //     if (order.orderId === orderId) {
+  //       return { ...order, [field]: !order[field] };
+  //     }
+  //     return order;
+  //   });
+
+  //   const orderToUpdate = updatedOrders.find(order => order.orderId === orderId);
+
+  //   if (field === 'delivered' && orderToUpdate) {
+  //     await updateDoc(userDocRef, {
+  //       current_orders: arrayRemove(orderToUpdate),
+  //       recent_orders: arrayUnion(orderToUpdate)
+  //     });
+  //     setOrders(updatedOrders.filter(order => order.orderId !== orderId));
+  //   } else {
+  //     await updateDoc(userDocRef, { 
+  //       current_orders: updatedOrders.filter(order => order.userId === userId) 
+  //     });
+  //     setOrders(updatedOrders);
+  //   }
+  // };
+
   const toggleOrderStatus = async (orderId: string, userId: string, field: 'delivered' | 'cancelled') => {
     const userDocRef = doc(db, 'users', 'qWE5sgjt0RRhtHDqwciu', 'client_data', userId);
     const updatedOrders = orders.map(order => {
@@ -61,14 +86,23 @@ const OngoingOrderpg = () => {
       }
       return order;
     });
-
+  
     const orderToUpdate = updatedOrders.find(order => order.orderId === orderId);
-
+  
     if (field === 'delivered' && orderToUpdate) {
       await updateDoc(userDocRef, {
         current_orders: arrayRemove(orderToUpdate),
         recent_orders: arrayUnion(orderToUpdate)
       });
+  
+      // Write the delivered order to the all_recent_orders collection using addDoc
+      const allRecentOrdersRef = collection(db, 'all_recent_orders');
+      await addDoc(allRecentOrdersRef, {
+        ...orderToUpdate,  // Spread the order details
+        delivered: true,   // Ensure delivered is true
+        userId: userId,    // Include the userId
+      });
+  
       setOrders(updatedOrders.filter(order => order.orderId !== orderId));
     } else {
       await updateDoc(userDocRef, { 
@@ -77,6 +111,8 @@ const OngoingOrderpg = () => {
       setOrders(updatedOrders);
     }
   };
+  
+  
 
   return (
     <div className="container mx-auto">
