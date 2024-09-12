@@ -151,12 +151,93 @@ const Inventorypg: React.FC = () => {
     }
   };
 
+  // mock data addition
+  const bulkAddProducts = async () => {
+    
+
+    const mockProducts: Product[] = [
+      // Apple Products
+      { id: 1, img: 'apple_macbook.jpg', name: 'MacBook Air', manufacturer: 'Apple', model: 'M1 2020', qty: 15, price: 1200, category: 'laptops', details: 'Apple M1 chip with 8-core CPU' },
+      { id: 2, img: 'apple_imac.jpg', name: 'iMac 24"', manufacturer: 'Apple', model: '2021', qty: 10, price: 1800, category: 'desktops', details: '24-inch 4.5K Retina display with M1 chip' },
+      { id: 3, img: 'apple_iphone.jpg', name: 'iPhone 13', manufacturer: 'Apple', model: '13 Pro', qty: 50, price: 999, category: 'accessories', details: '128GB, A15 Bionic chip' },
+      { id: 4, img: 'apple_airpods.jpg', name: 'AirPods Pro', manufacturer: 'Apple', model: '2nd Gen', qty: 80, price: 250, category: 'accessories', details: 'Active noise cancellation, wireless charging' },
+    
+      // Dell Products
+      { id: 5, img: 'dell_xps.jpg', name: 'Dell XPS 13', manufacturer: 'Dell', model: '2022', qty: 20, price: 1500, category: 'laptops', details: 'Intel i7, 16GB RAM, 512GB SSD' },
+      { id: 6, img: 'dell_inspiron.jpg', name: 'Dell Inspiron 15', manufacturer: 'Dell', model: '5502', qty: 25, price: 800, category: 'laptops', details: 'Intel i5, 8GB RAM, 256GB SSD' },
+      { id: 7, img: 'dell_optiplex.jpg', name: 'Dell OptiPlex', manufacturer: 'Dell', model: '3080', qty: 30, price: 900, category: 'desktops', details: 'Intel i5, 8GB RAM, 1TB HDD' },
+    
+      // HP Products
+      { id: 8, img: 'hp_spectre.jpg', name: 'HP Spectre x360', manufacturer: 'HP', model: '2021', qty: 18, price: 1400, category: 'laptops', details: 'Intel i7, 16GB RAM, 1TB SSD' },
+      { id: 9, img: 'hp_pavilion.jpg', name: 'HP Pavilion 14', manufacturer: 'HP', model: '14-dv0054TU', qty: 22, price: 600, category: 'laptops', details: 'Intel i5, 8GB RAM, 256GB SSD' },
+      { id: 10, img: 'hp_envy.jpg', name: 'HP Envy Desktop', manufacturer: 'HP', model: 'TE01-1150xt', qty: 12, price: 1200, category: 'desktops', details: 'Intel i7, 16GB RAM, 1TB SSD' },
+    
+      // Samsung Products
+      { id: 11, img: 'samsung_galaxy.jpg', name: 'Samsung Galaxy S21', manufacturer: 'Samsung', model: 'S21 Ultra', qty: 40, price: 1200, category: 'accessories', details: '256GB, Exynos 2100' },
+      { id: 12, img: 'samsung_tab.jpg', name: 'Samsung Galaxy Tab S7', manufacturer: 'Samsung', model: 'S7+', qty: 28, price: 850, category: 'accessories', details: '12.4-inch display, Snapdragon 865+' },
+      { id: 13, img: 'samsung_desktop.jpg', name: 'Samsung Desktop Pro', manufacturer: 'Samsung', model: 'DM700A7D', qty: 10, price: 1100, category: 'desktops', details: 'Intel i7, 16GB RAM, 1TB SSD' },
+    
+      // Sony Products
+      { id: 14, img: 'sony_bravia.jpg', name: 'Sony Bravia TV', manufacturer: 'Sony', model: 'X90J', qty: 25, price: 1400, category: 'accessories', details: '65-inch 4K UHD Smart TV' },
+      { id: 15, img: 'sony_vaio.jpg', name: 'Sony Vaio Z', manufacturer: 'Sony', model: '2021', qty: 5, price: 2500, category: 'laptops', details: 'Intel i7, 16GB RAM, 1TB SSD' },
+      { id: 16, img: 'sony_camera.jpg', name: 'Sony Alpha a7 III', manufacturer: 'Sony', model: 'a7 III', qty: 12, price: 2000, category: 'accessories', details: '24MP Full-frame Mirrorless Camera' },
+    
+      // Huawei Products
+      { id: 17, img: 'huawei_matebook.jpg', name: 'Huawei MateBook X', manufacturer: 'Huawei', model: 'X Pro', qty: 15, price: 1300, category: 'laptops', details: 'Intel i7, 16GB RAM, 512GB SSD' },
+      { id: 18, img: 'huawei_matepad.jpg', name: 'Huawei MatePad Pro', manufacturer: 'Huawei', model: '2021', qty: 20, price: 750, category: 'accessories', details: '10.8-inch 2K display, Kirin 990' },
+      { id: 19, img: 'huawei_p40.jpg', name: 'Huawei P40 Pro', manufacturer: 'Huawei', model: 'P40', qty: 35, price: 1000, category: 'accessories', details: '256GB, Kirin 990 5G' },
+    
+      // Accessories
+      { id: 20, img: 'logitech_mouse.jpg', name: 'Logitech MX Master 3', manufacturer: 'Logitech', model: 'MX Master 3', qty: 50, price: 100, category: 'accessories', details: 'Advanced wireless mouse' },
+      { id: 21, img: 'razer_keyboard.jpg', name: 'Razer BlackWidow', manufacturer: 'Razer', model: 'V3', qty: 30, price: 200, category: 'accessories', details: 'Mechanical gaming keyboard' },
+      { id: 22, img: 'sennheiser_headset.jpg', name: 'Sennheiser HD 450BT', manufacturer: 'Sennheiser', model: 'HD 450BT', qty: 25, price: 150, category: 'accessories', details: 'Bluetooth wireless headset' },
+    
+      // Laptops
+      { id: 23, img: 'asus_zenbook.jpg', name: 'Asus ZenBook 14', manufacturer: 'Asus', model: 'UX425', qty: 18, price: 900, category: 'laptops', details: 'Intel i7, 16GB RAM, 512GB SSD' },
+      { id: 24, img: 'lenovo_ideapad.jpg', name: 'Lenovo IdeaPad Flex 5', manufacturer: 'Lenovo', model: '5 14ALC05', qty: 22, price: 700, category: 'laptops', details: 'AMD Ryzen 5, 8GB RAM, 256GB SSD' },
+      { id: 25, img: 'microsoft_surface.jpg', name: 'Microsoft Surface Laptop 4', manufacturer: 'Microsoft', model: 'Laptop 4', qty: 10, price: 1500, category: 'laptops', details: 'Intel i7, 16GB RAM, 512GB SSD' },
+    
+      // Desktops
+      { id: 26, img: 'lenovo_legion.jpg', name: 'Lenovo Legion Tower 5', manufacturer: 'Lenovo', model: 'Tower 5i', qty: 8, price: 1300, category: 'desktops', details: 'Intel i7, 16GB RAM, 1TB SSD' },
+      { id: 27, img: 'asus_rog.jpg', name: 'Asus ROG Strix', manufacturer: 'Asus', model: 'G15', qty: 5, price: 2000, category: 'desktops', details: 'Intel i9, 32GB RAM, 1TB SSD' },
+      { id: 28, img: 'acer_predator.jpg', name: 'Acer Predator Orion', manufacturer: 'Acer', model: '3000', qty: 6, price: 1800, category: 'desktops', details: 'Intel i7, 16GB RAM, 512GB SSD' },
+    
+      // Miscellaneous
+      
+    ];    
+  
+    try {
+      const db = getFirestore();
+      const usersCollection = collection(db, 'users');
+      const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
+      const sellerDataCollection = collection(userDoc, 'seller_data');
+      const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+      
+      const updatedProducts = [...products, ...mockProducts];
+  
+      await updateDoc(sellerDataDoc, {
+        products: updatedProducts
+      });
+  
+      fetchProducts(); // Refresh the product list after adding
+    } catch (err) {
+      console.error('Error adding mock products:', err);
+    }
+  };
+  
+
   return (
     <div className="p-0">
       <h2 className="text-2xl font-bold mb-2">Inventory</h2>
       <p className='text-xs mb-8'>Manage your stock, add, delete, update your products</p>
+      {/* mock data addition */}
+      {/* <button onClick={bulkAddProducts} className="mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600">
+  Add Mock Products
+</button> */}
+
       <div className="mb-4 bg-white p-4 rounded shadow">
         <h3 className="text-xl font-semibold mb-2">Add New Product</h3>
+
         <div className="grid grid-cols-2 gap-4">
           <input type="text" name="name" placeholder="Name" value={newProduct.name} onChange={handleInputChange} className="p-2 border rounded" />
           <input type="text" name="manufacturer" placeholder="Manufacturer" value={newProduct.manufacturer} onChange={handleInputChange} className="p-2 border rounded" />
@@ -197,9 +278,9 @@ const Inventorypg: React.FC = () => {
                 <p><strong>Price:</strong> RWF{product.price}</p>
                 <p><strong>Quantity:</strong> {product.qty}</p>
                 <p><strong>Details:</strong> {product.details}</p>
-                <div className="mt-2">
-                  <button onClick={() => setEditingProduct(product)} className="bg-yellow-500 text-white p-2 rounded mr-2 hover:bg-yellow-600">Edit</button>
-                  <button onClick={() => deleteProduct(product.id!)} className="bg-red-500 text-white p-2 rounded hover:bg-red-600">Delete</button>
+                <div className="flex mt-2 w-full">
+                  <button onClick={() => setEditingProduct(product)} className="bg-yellow-500 w-1/2 text-white p-2 rounded mr-2 hover:bg-yellow-600">Edit</button>
+                  <button onClick={() => deleteProduct(product.id!)} className="bg-red-500 w-1/2 text-white p-2 rounded hover:bg-red-600">Delete</button>
                 </div>
               </>
             )}
