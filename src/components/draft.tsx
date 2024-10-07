@@ -35,10 +35,8 @@ const Inventorypg2: React.FC = () => {
   const fetchProducts = async () => {
     try {
       const db = getFirestore();
-      const usersCollection = collection(db, 'users');
-      const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
-      const sellerDataCollection = collection(userDoc, 'seller_data');
-      const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+      // Update the reference to point to the top-level seller_data_new collection
+      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
       
       const sellerDataSnapshot = await getDoc(sellerDataDoc);
       
@@ -73,10 +71,8 @@ const Inventorypg2: React.FC = () => {
   const addProduct = async () => {
     try {
       const db = getFirestore();
-      const usersCollection = collection(db, 'users');
-      const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
-      const sellerDataCollection = collection(userDoc, 'seller_data');
-      const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+      // Update the reference to point to the top-level seller_data_new collection
+      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
 
       //console.log('Adding product:', newProduct);
       const updatedProducts = [...products, { ...newProduct, id: Date.now() }];
@@ -98,10 +94,8 @@ const Inventorypg2: React.FC = () => {
     if (!editingProduct) return;
     try {
       const db = getFirestore();
-      const usersCollection = collection(db, 'users');
-      const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
-      const sellerDataCollection = collection(userDoc, 'seller_data');
-      const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
+      // Update the reference to point to the top-level seller_data_new collection
+      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
 
       const updatedProducts = products.map(p => p.id === editingProduct.id ? editingProduct : p);
       
@@ -119,11 +113,9 @@ const Inventorypg2: React.FC = () => {
   const deleteProduct = async (productId: number) => {
     try {
       const db = getFirestore();
-      const usersCollection = collection(db, 'users');
-      const userDoc = doc(usersCollection, 'qWE5sgjt0RRhtHDqwciu');
-      const sellerDataCollection = collection(userDoc, 'seller_data');
-      const sellerDataDoc = doc(sellerDataCollection, 'Aa8DJ0GHYuhpI1Tt861e');
-
+      // Update the reference to point to the top-level seller_data_new collection
+      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
+      
       const updatedProducts = products.filter(p => p.id !== productId);
       
       await updateDoc(sellerDataDoc, {

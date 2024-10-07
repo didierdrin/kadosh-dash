@@ -18,10 +18,8 @@ const ProfileCard = () => {
   const fetchUserInfo = async () => {
     try {
       const db = getFirestore();
-      const usersCollection = collection(db, "users");
-      const userDoc = doc(usersCollection, "qWE5sgjt0RRhtHDqwciu"); // Use your Firebase user ID
-      const sellerDataCollection = collection(userDoc, "seller_data");
-      const sellerDataDoc = doc(sellerDataCollection, "Aa8DJ0GHYuhpI1Tt861e");
+      // Update the reference to point to the top-level seller_data_new collection
+      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
 
       const sellerDataSnapshot = await getDoc(sellerDataDoc);
 
@@ -47,10 +45,8 @@ const ProfileCard = () => {
   const handleSave = async () => {
     try {
       const db = getFirestore();
-      const usersCollection = collection(db, "users");
-      const userDoc = doc(usersCollection, "qWE5sgjt0RRhtHDqwciu");
-      const sellerDataCollection = collection(userDoc, "seller_data");
-      const sellerDataDoc = doc(sellerDataCollection, "Aa8DJ0GHYuhpI1Tt861e");
+      // Update the reference to point to the top-level seller_data_new collection
+      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
 
       await updateDoc(sellerDataDoc, {
         seller_info: { fullName, email: user?.email },
