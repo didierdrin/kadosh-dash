@@ -287,3 +287,118 @@ const OngoingOrderpg = () => {
 };
 
 export default OngoingOrderpg;
+
+
+
+// "use client";
+
+// import { useState, useEffect } from 'react';
+// import { getFirestore, collection, getDocs, getDoc,  doc, addDoc,updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+
+// interface Order {
+//   orderId: string;
+//   createTime: string;
+//   delivered: boolean;
+//   cancelled: boolean;
+//   products: Array<{
+//     id: number;
+//     name: string;
+//     price: number;
+//     qty: number;
+//   }>;
+//   shippingDetails: {
+//     address: string;
+//     city: string;
+//     email: string;
+//     fullName: string;
+//     zipCode: string;
+//   };
+//   total: number;
+//   userId: string; // Add this to keep track of which user placed the order
+// }
+
+// const OngoingOrderpg = () => {
+//   const [orders, setOrders] = useState<Order[]>([]);
+//   const db = getFirestore();
+
+//   useEffect(() => {
+//     fetchAllOrders();
+//   }, []);
+
+//   const fetchAllOrders = async () => {
+//     // Reference to the specific seller document
+//     const sellerDocRef = doc(db, "seller_data_new", "Aa8DJ0GHYuhpI1Tt861e");
+//     const sellerSnapshot = await getDoc(sellerDocRef);
+
+//     if (sellerSnapshot.exists()) {
+//       const sellerData = sellerSnapshot.data();
+//       if (sellerData.current_orders && Array.isArray(sellerData.current_orders)) {
+//         const allOrders = sellerData.current_orders.map((order: Order) => ({
+//           ...order,
+//           user2Id: "Aa8DJ0GHYuhpI1Tt861e", // Assign the seller document ID for reference
+//         }));
+//         setOrders(allOrders);
+//       } else {
+//         console.error("No orders found in current_orders");
+//       }
+//     } else {
+//       console.error("No seller document found");
+//     }
+//   };
+  
+//   // const fetchAllOrders = async () => {
+//   //   const clientDataRef = collection(db, "seller_data_new", "Aa8DJ0GHYuhpI1Tt861e");
+//   //   const querySnapshot = await getDocs(clientDataRef);
+    
+//   //   let allOrders: Order[] = [];
+
+//   //   querySnapshot.forEach((doc) => {
+//   //     const userData = doc.data();
+//   //     if (userData.current_orders && Array.isArray(userData.current_orders)) {
+//   //       const userOrders = userData.current_orders.map((order: Order) => ({
+//   //         ...order,
+//   //         userId: doc.id
+//   //       }));
+//   //       allOrders = [...allOrders, ...userOrders];
+//   //     }
+//   //   });
+
+//   //   setOrders(allOrders);
+//   // };
+
+
+//   const toggleOrderStatus = async (orderId: string, userId: string, field: 'delivered' | 'cancelled') => {
+//     const userDocRef = doc(db, 'client_data_new', userId);
+//     const updatedOrders = orders.map(order => {
+//       if (order.orderId === orderId) {
+//         return { ...order, [field]: !order[field] };
+//       }
+//       return order;
+//     });
+  
+//     const orderToUpdate = updatedOrders.find(order => order.orderId === orderId);
+  
+//     if (field === 'delivered' && orderToUpdate) {
+//       await updateDoc(userDocRef, {
+//         current_orders: arrayRemove(orderToUpdate),
+//         recent_orders: arrayUnion(orderToUpdate)
+//       });
+  
+//       // Write the delivered order to the all_recent_orders collection using addDoc
+//       const allRecentOrdersRef = collection(db, 'all_recent_orders');
+//       await addDoc(allRecentOrdersRef, {
+//         ...orderToUpdate,  // Spread the order details
+//         delivered: true,   // Ensure delivered is true
+//         userId: userId,    // Include the userId
+//       });
+  
+//       setOrders(updatedOrders.filter(order => order.orderId !== orderId));
+//     } else {
+//       await updateDoc(userDocRef, { 
+//         current_orders: updatedOrders.filter(order => order.userId === userId) 
+//       });
+//       setOrders(updatedOrders);
+//     }
+//   };
+  
+  

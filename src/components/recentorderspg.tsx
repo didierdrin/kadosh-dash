@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { useState, useEffect } from "react";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 interface Order {
   orderId: string;
@@ -34,24 +34,82 @@ const RecentOrderspg = () => {
   }, []);
 
   const fetchAllRecentOrders = async () => {
-    const clientDataRef = collection(db, 'users', 'qWE5sgjt0RRhtHDqwciu', 'client_data');
-    const querySnapshot = await getDocs(clientDataRef);
-    
-    let allRecentOrders: Order[] = [];
+    // Reference to the `all_recent_orders` collection
+    const recentOrdersRef = collection(db, "all_recent_orders");
+    const querySnapshot = await getDocs(recentOrdersRef);
 
-    querySnapshot.forEach((doc) => {
-      const userData = doc.data();
-      if (userData.recent_orders && Array.isArray(userData.recent_orders)) {
-        const userOrders = userData.recent_orders.map((order: Order) => ({
-          ...order,
-          userId: doc.id
-        }));
-        allRecentOrders = [...allRecentOrders, ...userOrders];
-      }
+    // Map each document in `all_recent_orders` to an `Order` object
+    const allRecentOrders: Order[] = querySnapshot.docs.map((doc) => {
+      const orderData = doc.data();
+      return {
+        orderId: orderData.orderId,
+        createTime: orderData.createTime,
+        delivered: orderData.delivered,
+        cancelled: orderData.cancelled,
+        products: orderData.products || [],
+        shippingDetails: orderData.shippingDetails || {},
+        total: orderData.total,
+        userId: orderData.clientId || "N/A",
+      } as Order;
     });
 
     setOrders(allRecentOrders);
   };
+
+// "use client";
+
+// import { useState, useEffect } from 'react';
+// import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+
+// interface Order {
+//   orderId: string;
+//   createTime: string;
+//   delivered: boolean;
+//   cancelled: boolean;
+//   products: Array<{
+//     id: number;
+//     name: string;
+//     price: number;
+//     qty: number;
+//   }>;
+//   shippingDetails: {
+//     address: string;
+//     city: string;
+//     email: string;
+//     fullName: string;
+//     zipCode: string;
+//   };
+//   total: number;
+//   userId: string;
+// }
+
+// const RecentOrderspg = () => {
+//   const [orders, setOrders] = useState<Order[]>([]);
+//   const db = getFirestore();
+
+//   useEffect(() => {
+//     fetchAllRecentOrders();
+//   }, []);
+
+//   const fetchAllRecentOrders = async () => {
+//     const clientDataRef = collection(db, 'users', 'qWE5sgjt0RRhtHDqwciu', 'client_data');
+//     const querySnapshot = await getDocs(clientDataRef);
+    
+//     let allRecentOrders: Order[] = [];
+
+//     querySnapshot.forEach((doc) => {
+//       const userData = doc.data();
+//       if (userData.recent_orders && Array.isArray(userData.recent_orders)) {
+//         const userOrders = userData.recent_orders.map((order: Order) => ({
+//           ...order,
+//           userId: doc.id
+//         }));
+//         allRecentOrders = [...allRecentOrders, ...userOrders];
+//       }
+//     });
+
+//     setOrders(allRecentOrders);
+//   };
 
   return (
     <div className="container mx-auto">
