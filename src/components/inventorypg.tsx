@@ -90,63 +90,150 @@ const Inventorypg: React.FC = () => {
     }
   };
 
-  const uploadImages = async (): Promise<string[]> => {
-    if (images.length === 0) return []; // If no images, return empty array
+  // const uploadImages = async (): Promise<string[]> => {
+  //   if (images.length === 0) return []; // If no images, return empty array
 
+  //   const storage = getStorage();
+  //   const uploadPromises = images.map(async (image) => {
+  //     const storageRef = ref(storage, image.name);
+  //     await uploadBytes(storageRef, image);
+  //     const downloadURL = await getDownloadURL(storageRef);
+  //     return downloadURL;
+  //   });
+
+  //   const imgUrls = await Promise.all(uploadPromises); // Wait for all images to upload
+  //   return imgUrls;
+  // };
+
+  const uploadImages = async (): Promise<string[]> => {
+    if (images.length === 0) return []; // No images to upload
+  
+    
     const storage = getStorage();
     const uploadPromises = images.map(async (image) => {
+      if (!image.name) {
+        console.error("Image file is missing a 'name' property:", image);
+        return ''; // Skip this file if it has no name
+      }
       const storageRef = ref(storage, image.name);
       await uploadBytes(storageRef, image);
       const downloadURL = await getDownloadURL(storageRef);
       return downloadURL;
     });
-
-    const imgUrls = await Promise.all(uploadPromises); // Wait for all images to upload
+  
+    const imgUrls = await Promise.all(uploadPromises);
     return imgUrls;
   };
+  
 
   const addProduct = async () => {
     try {
       const db = getFirestore();
-      const img_urls = await uploadImages(); // Upload images and get URLs
+      const imgUrls = await uploadImages(); // Upload images and get URLs
       const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e');
-
-      const updatedProducts = [...products, { ...newProduct, img: img_urls, id: Date.now() }];
-
+  
+      const updatedProducts = [
+        ...products,
+        { ...newProduct, img: imgUrls, id: Date.now() },
+      ];
+  
       await updateDoc(sellerDataDoc, {
-        products: updatedProducts
+        products: updatedProducts,
       });
-
+  
+      // Reset fields after adding the product
       setNewProduct({
-        img: [], name: '', manufacturer: '', model: '', qty: 0, price: 0, category: '', details: ''
+        img: [],
+        name: '',
+        manufacturer: '',
+        model: '',
+        qty: 0,
+        price: 0,
+        category: '',
+        details: '',
       });
-      setImages([]); // Reset images after upload
-      fetchProducts();
+      setImages([]); // Clear image files
+      fetchProducts(); // Refresh product list
     } catch (err) {
       console.error('Error adding product:', err);
     }
   };
-
+  
   const updateProduct = async () => {
     if (!editingProduct) return;
+  
     try {
-      const img_urls = images.length > 0 ? await uploadImages() : editingProduct.img; // Upload new images if any
+      // Check if new images were added
+      const newImgUrls = images.length > 0 ? await uploadImages() : [];
+      const updatedImgUrls = [
+        ...(editingProduct.img || []),
+        ...newImgUrls,
+      ]; // Combine existing and new images
+  
       const db = getFirestore();
       const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e');
-
-      const updatedProducts = products.map(p => p.id === editingProduct.id ? { ...editingProduct, img: img_urls } : p);
-
+  
+      // Map over products to update only the editing product's images
+      const updatedProducts = products.map((p) =>
+        p.id === editingProduct.id
+          ? { ...editingProduct, img: updatedImgUrls }
+          : p
+      );
+  
       await updateDoc(sellerDataDoc, {
-        products: updatedProducts
+        products: updatedProducts,
       });
-
+  
       setEditingProduct(null);
-      setImages([]); // Reset images after update
-      fetchProducts();
+      setImages([]); // Clear selected files
+      fetchProducts(); // Refresh products list
     } catch (err) {
       console.error('Error updating product:', err);
     }
   };
+  
+  // const addProduct = async () => {
+  //   try {
+  //     const db = getFirestore();
+  //     const img_urls = await uploadImages(); // Upload images and get URLs
+  //     const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e');
+
+  //     const updatedProducts = [...products, { ...newProduct, img: img_urls, id: Date.now() }];
+
+  //     await updateDoc(sellerDataDoc, {
+  //       products: updatedProducts
+  //     });
+
+  //     setNewProduct({
+  //       img: [], name: '', manufacturer: '', model: '', qty: 0, price: 0, category: '', details: ''
+  //     });
+  //     setImages([]); // Reset images after upload
+  //     fetchProducts();
+  //   } catch (err) {
+  //     console.error('Error adding product:', err);
+  //   }
+  // };
+
+  // const updateProduct = async () => {
+  //   if (!editingProduct) return;
+  //   try {
+  //     const img_urls = images.length > 0 ? await uploadImages() : editingProduct.img; // Upload new images if any
+  //     const db = getFirestore();
+  //     const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e');
+
+  //     const updatedProducts = products.map(p => p.id === editingProduct.id ? { ...editingProduct, img: img_urls } : p);
+
+  //     await updateDoc(sellerDataDoc, {
+  //       products: updatedProducts
+  //     });
+
+  //     setEditingProduct(null);
+  //     setImages([]); // Reset images after update
+  //     fetchProducts();
+  //   } catch (err) {
+  //     console.error('Error updating product:', err);
+  //   }
+  // };
 
   const deleteProduct = async (productId: number) => {
     try {
@@ -315,9 +402,9 @@ const Inventorypg: React.FC = () => {
       <p className='text-xs mb-8'>Manage your stock, add, delete, update your products</p>
 
       {/* mock data addition */}
-       <button onClick={bulkAddProducts} className="mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600">
+       {/* <button onClick={bulkAddProducts} className="mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600">
    Add Mock Products
- </button> 
+ </button>  */}
 
       {/* Add New Product Section */}
       <div className="mb-4 bg-white p-4 rounded shadow">
@@ -340,8 +427,36 @@ const Inventorypg: React.FC = () => {
         <h3 className="text-xl font-semibold mb-2">Product List</h3>
         {products.map((product) => (
           <div key={product.id} className="mb-4 p-4 border rounded">
+           
             {editingProduct && editingProduct.id === product.id ? (
+              
               <div className="grid grid-cols-2 gap-4">
+               <div className="flex gap-2">
+    {editingProduct.img.map((imgUrl, index) => (
+      <div key={index} className="relative">
+        <img src={imgUrl} alt={`Product Image ${index}`} className="w-20 h-20 object-cover rounded" />
+        <button
+  onClick={() => {
+    setEditingProduct((prev) => 
+      prev ? { 
+        ...prev, 
+        img: prev.img.filter((_, i) => i !== index), 
+        name: prev.name || '', 
+        manufacturer: prev.manufacturer || '', 
+        model: prev.model || '', 
+        category: prev.category || '', 
+        details: prev.details || '' 
+      } : null
+    );
+  }}
+  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+>
+  <FaTrash />
+</button>
+
+      </div>
+    ))}
+  </div>
                 <input type="text" name="name" value={editingProduct.name} onChange={(e) => handleInputChange(e, false)} className="p-2 border rounded" />
                 <input type="text" name="manufacturer" value={editingProduct.manufacturer} onChange={(e) => handleInputChange(e, false)} className="p-2 border rounded" />
                 <input type="text" name="model" value={editingProduct.model} onChange={(e) => handleInputChange(e, false)} className="p-2 border rounded" />
@@ -356,11 +471,36 @@ const Inventorypg: React.FC = () => {
             ) : (
               <>
                 {/* Carousel for displaying multiple images */}
-                <Carousel responsive={responsive} className="mb-2">
+                <Carousel
+  responsive={responsive}
+  className="mb-2"
+  swipeable={true}
+  draggable={true}
+  showDots={true}
+  ssr={true} // Server-Side Rendering
+  infinite={true}
+  autoPlay={false} // Set to true if you want autoplay
+  keyBoardControl={true}
+  containerClass="carousel-container"
+  itemClass="carousel-item-padding"
+>
+  <div className="flex gap-4"> {/* Flex container for row alignment */}
+    {product.img.map((imgUrl, index) => (
+      <img
+        key={index}
+        src={imgUrl}
+        alt={`${product.name}-${index}`}
+        className="w-3/5 h-40 object-cover rounded" // Adjust width and height as per row layout
+      />
+    ))}
+  </div>
+</Carousel>
+
+                {/* <Carousel responsive={responsive} className="mb-2">
                   {product.img.map((imgUrl, index) => (
                     <img key={index} src={imgUrl} alt={`${product.name}-${index}`} className="w-full h-40 object-cover rounded" />
                   ))}
-                </Carousel>
+                </Carousel> */}
                 <p><strong>Name:</strong> {product.name}</p>
                 <p><strong>Manufacturer:</strong> {product.manufacturer}</p>
                 <p><strong>Model:</strong> {product.model}</p>

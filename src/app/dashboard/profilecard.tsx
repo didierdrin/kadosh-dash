@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from "react";
-import { getFirestore, doc, getDoc, updateDoc, collection } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/components/authprovider"; // Import the authentication context
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 
@@ -18,9 +19,7 @@ const ProfileCard = () => {
   const fetchUserInfo = async () => {
     try {
       const db = getFirestore();
-      // Update the reference to point to the top-level seller_data_new collection
-      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
-
+      const sellerDataDoc = doc(db, 'seller_data_new', user?.uid || ""); // Use userId as document ID
       const sellerDataSnapshot = await getDoc(sellerDataDoc);
 
       if (sellerDataSnapshot.exists()) {
@@ -45,19 +44,31 @@ const ProfileCard = () => {
   const handleSave = async () => {
     try {
       const db = getFirestore();
-      // Update the reference to point to the top-level seller_data_new collection
-      const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
-
-      await updateDoc(sellerDataDoc, {
-        seller_info: { fullName, email: user?.email },
-      });
-
+      const sellerDataDoc = doc(db, 'seller_data_new', user?.uid || ""); // Use userId as document ID
+  
+      // Check if the document exists
+      const docSnapshot = await getDoc(sellerDataDoc);
+  
+      if (docSnapshot.exists()) {
+        // If document exists, update it
+        await updateDoc(sellerDataDoc, {
+          seller_info: { fullName, email: user?.email },
+        });
+      } else {
+        // If document does not exist, create it with setDoc
+        await setDoc(sellerDataDoc, {
+          seller_info: { fullName, email: user?.email },
+        });
+      }
+  
       setUserInfo((prev) => ({ ...prev, fullName }));
       handleDialogClose();
     } catch (err) {
       console.error("Error saving user info:", err);
     }
   };
+  
+
 
   return (
     <>

@@ -400,5 +400,68 @@ export default OngoingOrderpg;
 //       setOrders(updatedOrders);
 //     }
 //   };
+
+
+// import React, { useEffect, useState } from "react";
+// import { getFirestore, doc, getDoc, updateDoc, collection } from "firebase/firestore";
+// import { useAuth } from "@/components/authprovider"; // Import the authentication context
+// import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
+
+// const ProfileCard = () => {
+//   const { user } = useAuth(); // Get the logged-in user from context
+//   const [userInfo, setUserInfo] = useState<{ fullName?: string; email: string }>({ email: user?.email || "" });
+//   const [openDialog, setOpenDialog] = useState(false);
+//   const [fullName, setFullName] = useState("");
+
+//   useEffect(() => {
+//     if (user) {
+//       fetchUserInfo();
+//     }
+//   }, [user]);
+
+//   const fetchUserInfo = async () => {
+//     try {
+//       const db = getFirestore();
+//       // Update the reference to point to the top-level seller_data_new collection
+//       const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
+
+//       const sellerDataSnapshot = await getDoc(sellerDataDoc);
+
+//       if (sellerDataSnapshot.exists()) {
+//         const sellerData = sellerDataSnapshot.data();
+//         const fullName = sellerData?.seller_info?.fullName || "";
+//         setUserInfo({ fullName, email: user?.email || "" });
+//       }
+//     } catch (err) {
+//       console.error("Error fetching user info:", err);
+//     }
+//   };
+
+//   const handleDialogOpen = () => {
+//     setFullName(userInfo.fullName || ""); // Prefill the full name if available
+//     setOpenDialog(true);
+//   };
+
+//   const handleDialogClose = () => {
+//     setOpenDialog(false);
+//   };
+
+//   const handleSave = async () => {
+//     try {
+//       const db = getFirestore();
+//       // Update the reference to point to the top-level seller_data_new collection
+//       const sellerDataDoc = doc(db, 'seller_data_new', 'Aa8DJ0GHYuhpI1Tt861e'); 
+
+//       await updateDoc(sellerDataDoc, {
+//         seller_info: { fullName, email: user?.email },
+//       });
+
+//       setUserInfo((prev) => ({ ...prev, fullName }));
+//       handleDialogClose();
+//     } catch (err) {
+//       console.error("Error saving user info:", err);
+//     }
+//   };
+
   
   
