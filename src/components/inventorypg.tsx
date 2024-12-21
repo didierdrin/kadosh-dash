@@ -154,6 +154,7 @@ const Inventorypg: React.FC = () => {
       });
       setImages([]); // Clear image files
       fetchProducts(); // Refresh product list
+      window.location.reload();
     } catch (err) {
       console.error('Error adding product:', err);
     }

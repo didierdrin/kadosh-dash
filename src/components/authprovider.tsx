@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "/dashboard";
       router.push('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
@@ -56,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await signOut(auth);
+      window.location.href = "/auth"; 
       router.push('/auth');
     } catch (error) {
       console.error('Logout error:', error);
