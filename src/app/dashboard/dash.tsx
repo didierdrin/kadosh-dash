@@ -10,12 +10,11 @@ import Overviewpg from "@/components/overviewpg";
 import Inventorypg from "@/components/inventorypg";
 import OngoingOrderpg from "@/components/ongoingorderpg";
 import RecentOrderspg from "@/components/recentorderspg";
+import Advertise from "@/components/advertise";
+import Help from "@/components/help";
+import Settings from "@/components/settings";
 import ProfileCard from "./profilecard";
 
-// Components for each page
-const Advertise = () => <div>Advertisements</div>;
-const Help = () => <div>Help</div>;
-const Settings = () => <div>Settings</div>;
 
 export default function Home() {
   const { logout } = useAuth();
