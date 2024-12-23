@@ -48,7 +48,7 @@ export default function Home() {
       <div className={`flex flex-col ${collapsed ? "w-16 space-y-5" : "w-1/4 space-y-4"} min-h-screen text-gray-500 border-r border-slate-400 pt-5 pl-5 transition-width duration-300 ease-in-out`}>
         <div className="flex items-center justify-between mb-5">
           <a href="/" className={`text-black font-bold text-2xl  cursor-pointer ${collapsed ? "hidden" : ""}`}>
-            Kadosh
+            Shamayim
           </a>
           <button
             onClick={() => setCollapsed(!collapsed)}
@@ -349,7 +349,7 @@ export default function Home() {
 //           href="/"
 //           className="text-black font-bold text-2xl mb-5 cursor-pointer"
 //         >
-//           Kadosh
+//           Shamayim
 //         </a>
 //         <ProfileCard />
 //         <a href="/" className="text-xs mt-3">

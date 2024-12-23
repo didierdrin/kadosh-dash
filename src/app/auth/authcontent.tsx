@@ -52,13 +52,13 @@ export default function Auth() {
       {/* Welcome section */}
       <div className="w-1/2 bg-blue-600 text-white p-12 flex flex-col justify-between">
         <div>
-          <h1 className="text-4xl font-bold mb-4">Kadosh</h1>
+          <h1 className="text-4xl font-bold mb-4">Shamayim</h1>
           <p className="text-xl mb-8">Welcome to store dashboard</p>
         </div>
         <div className="space-y-4">
           <p className="text-lg">
             Manage your stock, track your deliveries, and achieve your sales
-            goals with Kadosh.
+            goals with Shamayim.
           </p>
           <p className="text-sm opacity-75">
             Join thousands of users who have already improved their revenue.

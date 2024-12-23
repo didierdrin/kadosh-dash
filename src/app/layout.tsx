@@ -7,8 +7,8 @@ import { AuthProvider } from "../components/authprovider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Kadosh - Dashboard",
-  description: "Inventory, Delivery, and Customer management web platform for Kadosh ecommerce website.",
+  title: "Shamayim - Dashboard",
+  description: "Inventory, Delivery, and Customer management web platform for Shamayim ecommerce website.",
 };
 
 export default function RootLayout({

@@ -64,7 +64,7 @@ export const deliveryEmailTemplate = ({
           </tr>
         </tfoot>
       </table>
-      <p>If you have any questions, feel free to reach out to us at <a href="mailto:support@kadosh.com">support@kadosh.com</a>.</p>
+      <p>If you have any questions, feel free to reach out to us at <a href="mailto:support@shamayim.com">support@shamayim.com</a>.</p>
     </div>
   </body>
   </html>
