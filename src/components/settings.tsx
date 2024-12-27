@@ -75,6 +75,7 @@ const Settings = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded"
           >
+            <option value="RWF">RWF</option>
             <option value="USD">USD</option>
             <option value="EUR">EUR</option>
             <option value="GBP">GBP</option>
