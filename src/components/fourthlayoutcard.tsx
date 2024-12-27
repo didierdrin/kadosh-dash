@@ -2,7 +2,7 @@
 import React from "react";
 import MonthSelector from "./monthselectory";
 
-export default function SLCard({ cardName, cardPrice, children }: any) {
+export default function FourLCard({ cardName, cardPrice, children }: any) {
   function commify(num: any) {
     var str = num.toString().split(".");
     if (str[0].length >= 5) {
@@ -17,7 +17,7 @@ export default function SLCard({ cardName, cardPrice, children }: any) {
   return (
     <div className="bg-white w-full flex flex-col h-auto rounded-md px-6 py-3">
       <div className="flex justify-between">
-        <h2 className='font-semibold'>Store {cardName} Statistics</h2>
+        <h2 className='font-semibold'>{cardName} Statistics</h2>
         {/* <MonthSelector /> */}
       </div>
       <p className="text-xs">RWF{commify(cardPrice)}</p>

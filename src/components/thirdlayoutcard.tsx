@@ -17,12 +17,12 @@ const TLCard = ({ cardName, cardPrice, cardPercentage }: any) => {
     <div className="flex flex-col w-full h-auto rounded-md px-6 py-3 mr-2 bg-white">
       <div className="flex justify-between">
         <h3 className="font-semibold">{cardName}</h3>
-        <p className="text-sm p-1 px-2 rounded-lg border border-teal-300 cursor-pointer">
+        {/* <p className="text-sm p-1 px-2 rounded-lg border border-teal-300 cursor-pointer">
           {cardPercentage}%
-        </p>
+        </p> */}
       </div>
       <p className="text-xs mt-2"><strong>Total</strong> {commify(cardPrice)}</p>
-      <p className="text-xs mt-2">From this month</p>
+      <p className="text-xs mt-2">All time</p>
       {/* <p className="text-xs mt-2">{cardPercentage}% from last month</p> */}
     </div>
   );

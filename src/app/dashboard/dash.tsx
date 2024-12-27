@@ -28,7 +28,7 @@ export default function Home() {
       case "ongoingOrder":
         return <OngoingOrderpg />;
       case "inventory":
-        return <Inventorypg />;
+        return <Inventorypg setCurrentPage={setCurrentPage} />;
       case "recentOrders":
         return <RecentOrderspg />;
       case "advertise":
